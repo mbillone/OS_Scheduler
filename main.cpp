@@ -42,10 +42,55 @@ int quantum = 0; //I know that I need these but do not know what they do right n
 int quantumSlice = 0;
 
 
-//function instantiation
+//method instantiation, syst is a linked list that tracks all the inputs that go into the system in the order that they went into the system
 
-int getCurrentInputTime(string input) //gets the current input's time that it should start at
-void readInputCommand(string input, Node *)
+int getCurrentInputTime(string input); //gets the current input's time that it should start at
+void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed, Node *syst);
+void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed);
+void configSystem(char *str); //called when the system configuration input command is read
+void createJob(char *str, Node *syst, Node *submit);
+void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst);//called when the job wants to request devices while on the cpu
+void releaseDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst);//called when the job wants to releast devices while on the cpu
+void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit); //handles moving jobs from the submit queue to its respective holding queue
+void hold1QHanlding(Node *syst, Node *hold1, Node *ready);//handles moving jobs from holding queue 1 to ready queue
+void hold2QHandling(Node *syst, Node *hold2, Node *ready);//handles moving jobs from holding queue 2 to the ready queue
+void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs from the wait queue to the ready queue
+void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
+void cpuHandling(Node *syst, Node *cpu, Node *completed);//handles moving jobs from cpu to completed queues
+void updateSystem(Node *syst, Node *update, string status);//updates the system when a job moves from one state to another
+
+
+
+void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed, Node *syst){
+    char in[input.length()];//creates character array
+    strcpy(in, input.c_str());//converts the string into an array of characters
+    char *str;
+    str = strtok(in, " ");//spaces to seperate each part of the input
+    
+    if (input[0] == 'C'){
+        configSystem(str);
+    }
+    else if(input[0] == 'A'){
+        createJob(str, syst, submit);
+    }
+    else if(input[0] == 'Q'){
+        requestDevices(str, cpu, ready, wait, syst);
+    }
+    else if(input[0] == 'L'){
+        releaseDevices(str, cpu, ready, wait, syst);
+    }
+    else if(input[0] == 'D'){
+        displayStatus(input, syst, submit, wait, hold1, hold2, ready, completed)
+    }
+    else{
+        cout << "This is an unrecognized input" << endl;
+    }
+    
+}
+
+
+
+
 
 
 

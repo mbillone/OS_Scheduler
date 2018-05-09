@@ -21,17 +21,17 @@ printStatus (Node * jobs)
 	{
 	  if (temp->head == false)
 	    {
-	      cout << "Job Number " << temp->jobNum << "has status of: ";
+	      cout << "Job Number: " << temp->jobNum << "Status: ";
 	      if (temp->status == "Complete")
 		{
-		  cout << temp->status << "at time " << temp->
-		    completionTime << " with turn around time of " << temp->
+		  cout <<  temp->status << " Time: " << temp->
+		    completionTime << " Turn Around Time: " << temp->
 		    turnAroundTime;
 		}
 	      else
 		{
-		  cout << temp->status << " has " << temp->
-		    timeLeft << " till completed";
+		  cout << temp->status << " Time to Completion: " << temp->
+		    timeLeft;
 		}
 	      cout << endl;
 	    }
@@ -51,7 +51,7 @@ void traverseAndPrint (Node *jobs)
       int i = 0;
       while(temp->next != NULL){
         if (temp->head == false){
-            cout << "Job number " << temp->jobNum << " is in position" << i << " in current queue" << endl;
+            cout << "Job number: " << temp->jobNum << " Position in Current Queue: " << i <<endl;
             i++;
         }
         temp = temp->next;
