@@ -88,10 +88,49 @@ void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node 
     
 }
 
+void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed){
+    if (input == "D 9999" || input == "D 9999 "){ //need to take into account whether the terminate command is at the end of an input file or at the end
+        inputsCompleted = true;
+        return; //signifies the end of the simulation
+    }
+    
+    cout << "System status at" << currentTime << "is : " << endl;
+    
+    printStatus(syst);
+    
+    cout << "Submit Queue contains: " << endl;
+    
+    printQ(submit);
+    
+    cout << "Hold Queue 1 contains: " << endl;
+    
+    printQ(hold1);
+    
+    cout << "Hold Queue 2 contains: " << endl;
+    
+    printQ(hold2);
+    
+    cout << "Ready Queue contains: " << endl;
+    
+    printQ(ready);
+    
+    cout << "Wait Queue contains: " << endl;
+    
+    printQ(wait);
+    
+    cout << "CPU contains: " << endl; 
+    
+    printQ(cpu);
+    
+    cout << "Completed jobs : " << end;
+    
+    printQ(completed);
+    
+}
 
-
-
-
+void configSystem(char *str){
+    
+}
 
 
 

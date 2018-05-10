@@ -7,8 +7,7 @@
 using namespace std;
 
 //Prints the information for each job within the queue
-void
-printStatus (Node * jobs)
+void printStatus (Node * jobs)
 {
   Node *temp = jobs;
   if (temp->next == NULL)
@@ -26,7 +25,7 @@ printStatus (Node * jobs)
 		{
 		  cout <<  temp->status << " Time: " << temp->
 		    completionTime << " Turn Around Time: " << temp->
-		    turnAroundTime;
+		    turnAroundTime << " Weighted Turn Around Time: " << temp->weightedTurnAround;
 		}
 	      else
 		{
@@ -41,7 +40,7 @@ printStatus (Node * jobs)
 }
 
 
-void traverseAndPrint (Node *jobs)
+void printQ (Node *jobs)
 {
   Node *temp = jobs;
   if (temp->next == NULL);{

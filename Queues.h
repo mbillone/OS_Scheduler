@@ -27,8 +27,9 @@ struct Node{
     int runTime; //how long the job has been running for
     int timeLeft; //how long the job has left
     int maxDevices; //how many devices the job needs to complete
-    int requestedDevices; //how many devices the job asks for to begin witch
+    int requestedDevices; //how many devices the job asks for to begin with
     bool jobGranted;
+    int weightedTurnAround;//weighted turn around time of the job
     
 };
 
