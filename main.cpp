@@ -58,7 +58,7 @@ void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs fr
 void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
 void cpuHandling(Node *syst, Node *cpu, Node *completed);//handles moving jobs from cpu to completed queues
 void updateSystem(Node *syst, Node *update, string status);//updates the system when a job moves from one state to another
-
+int charToInt(char *str);
 
 
 void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed, Node *syst){
@@ -88,49 +88,85 @@ void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node 
     
 }
 
-void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed){
-    if (input == "D 9999" || input == "D 9999 "){ //need to take into account whether the terminate command is at the end of an input file or at the end
-        inputsCompleted = true;
-        return; //signifies the end of the simulation
+charToInt(char *str){ //method used to get the integer values out of the character array made from the input
+    int a = 0;
+    int b = strlen(str) - 1;
+    int c = 0;
+    
+    while (str[b] != '='){ //makes sure that the correct character in the input string is being converted. EX(M=43) -> 43 will be converted to an int
+        
+        a += pow(10,c) * (str[i] - '0');
+        c++;
+        b--;
     }
-    
-    cout << "System status at" << currentTime << "is : " << endl;
-    
-    printStatus(syst);
-    
-    cout << "Submit Queue contains: " << endl;
-    
-    printQ(submit);
-    
-    cout << "Hold Queue 1 contains: " << endl;
-    
-    printQ(hold1);
-    
-    cout << "Hold Queue 2 contains: " << endl;
-    
-    printQ(hold2);
-    
-    cout << "Ready Queue contains: " << endl;
-    
-    printQ(ready);
-    
-    cout << "Wait Queue contains: " << endl;
-    
-    printQ(wait);
-    
-    cout << "CPU contains: " << endl; 
-    
-    printQ(cpu);
-    
-    cout << "Completed jobs : " << end;
-    
-    printQ(completed);
-    
+    return a;
 }
 
 void configSystem(char *str){
-    
+    while (str != NULL){
+        if (str[0] == 'M'){
+            memory = charToInt(str);
+            availableMemory = memory;
+        }
+        else if (str[0] == 'S'){
+            devices = charToInt(str);
+            availableDevices = devices;
+        }
+        else if (str[0] == 'Q'){
+            quantum = charToInt(str);
+        }
+        else{
+            cout << "Input is not recognized" << endl;
+        }
+        str = strtok(NULL, " "); //truncates the character array to the next part of the system config input. EX: if M=43 S=12 is the character array then after M=43 is extracted it gets truncated off and S becomes str[0]
+    }
 }
+
+void createJob(char *str, Node *syst, Node *submit){
+    Node *job = new Node;
+    Node *copy = new Node; //copy created to be put into syst Q for when the system history is called
+    job->head = false;
+    copy->head = false;
+    job->status = SUBMIT_Q;//signifies entering the submit Q
+    copy->status = SUBMIT_Q;
+    job->arriveTime = currentTime;
+    copy->arriveTime = currentTime;
+    job->next = NULL;
+    copy->next = NULL;
+    
+    while str != NULL{ //going to do the same thing as configSystem with truncate and read beginning of char array
+        if (str[0] == 'J'){
+            job->jobNum = charToInt(str);
+            copy->jobNum = charToInt(str);
+        }
+        
+        else if (str[0] == 'M'){
+            job->maxMemory = charToInt(str);
+            copy->maxMemory = charToInt(str);
+        }
+        else if (str[0] == 'S'){
+            job->maxDevices = charToInt(str);
+            copy->maxDevices = charToInt(str);
+        }
+        else if (str[0] == 'R'){
+            job->runTime = charToInt(str);
+            copy->runTime = charToInt(str);
+            job->timeLeft = job->runTime;//have to make sure that run time and time left on job are the same to start
+            copy->timeLeft = copy->timeLeft;
+        }
+        else if (str[0] == 'P'){
+            job->priority = charToInt(str);
+            copy->priority = charToInt(str);
+        }
+        else{
+            cout << "Input is not recognized" << endl;
+        }
+        str = strtok(NULL, " ");
+    }
+    addToEnd(syst, copy);
+    addToEnd(submit, job);
+}
+
 
 
 
