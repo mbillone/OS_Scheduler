@@ -30,7 +30,8 @@ struct Node{
     int requestedDevices; //how many devices the job asks for to begin with
     int maxMemory; //memory required to complete the job
     int requestedMemory; //memory that the job requests to start with
-    bool jobGranted;
+    bool devicesGranted; //true if devices are granted to the job
+    bool memoryGranted; //true if memory is granted to the job
     
 };
 

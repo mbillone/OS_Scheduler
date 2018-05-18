@@ -56,8 +56,8 @@ void hold1QHanlding(Node *syst, Node *hold1, Node *ready);//handles moving jobs 
 void hold2QHandling(Node *syst, Node *hold2, Node *ready);//handles moving jobs from holding queue 2 to the ready queue
 void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs from the wait queue to the ready queue
 void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
-void cpuHandling(Node *syst, Node *cpu, Node *completed);//handles moving jobs from cpu to completed queues
-void updateSystem(Node *syst, Node *update, string status);//updates the system when a job moves from one state to another
+void cpuHandling(Node *syst, Node *cpu, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
+void updateSystem(Node *syst, Node *update, string status);//updates the system status when a job moves from one state to another
 int charToInt(char *str);
 
 
@@ -167,7 +167,65 @@ void createJob(char *str, Node *syst, Node *submit){
     addToEnd(submit, job);
 }
 
-
+void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
+    quantumSlice = 0;
+    int job = 0;
+    int devicesRequested = 0;
+    
+    while (str != NULL){//grabs job number and devices the job is requesting for the input
+        if (str[0] == 'J'){
+            job = charToInt(str);
+        }
+        else if (str[0] == 'D'){
+            devicesRequested = charToInt(str);
+        }
+        
+        str = strtok(NULL, " ");
+        
+    }
+    
+    cpu->next->requestedDevices = devicesRequested;
+    
+    if (job != cpu->next->jobNum){
+        cout << "Job number" << job << "could not request" << devicesRequested << "devices because the job is not running on the CPU" << endl;
+        
+        return;
+        
+    }
+    
+    if (cpu->next->requestDevices > cpu->next->maxDevices){
+        cout << "Job number" << job << "could not request" << devicesRequested << "devices because the requested devices is more than the maximum devices alotted for that job" << endl;
+        
+        return;
+    }
+    
+    if (cpu->next->requestedDevices > availableDevices){
+        cout << "Job number" << job << "could not request" << devicesRequested << "devices because the devices needed are not available" << endl;
+        
+        cpu->next->devicesGranted = false;
+        
+        Node *cpuToWait = remove(cpu, cpu->next->jobNum);//remove the denied job from the cpu queue
+        addToEnd(wait, cpuToWait);//puts the denied job into the wait queue
+        
+        Node *readyToCpu = remove(ready, ready->next->jobNum);//remove the next available job from the ready queue
+        addToEnd(cpu, readyToCpu);//puts the available job into the cpu to request devices
+    }
+    
+    if (devicesRequested <= availableDevices && cpu->next->jobNum == job){
+        cout << "Job number" << job << "request for" << devicesRequested << "granted" << endl;
+        
+        cpu->next->devicesGranted = true;
+        
+        availableDevices = availableDevices - devicesRequested;
+        
+        Node *cpuToReady = remove(cpu, cpu->next->jobNum)//remove device from cpu after devices have been allocated
+        addToEnd(ready. cpuToReady);//put job into ready queue to be cycled
+        }
+    
+    else{
+        cout << "Error: the device was neither granted nor denied it's request" << endl;
+    }
+}
 
 
 
