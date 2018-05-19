@@ -227,6 +227,68 @@ void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
     }
 }
 
+void hold1QHanlding(Node *syst, Node *hold1, Node *ready){
+    if(hold1->next != NULL){
+        Node *temp = hold1;
+        int shortestJob = 0;
+        int shortestJobTime = END_TIME;
+
+        while(temp != NULL){
+            if(temp->head == false){
+                if(temp->maxMemory <= availableMemory && temp->maxDevices <= availableDevices){
+                    if(temp->runTime < shortestJobTime){
+                        shortestJobTime = temp->runTime;
+                        shortestJob = temp->jobNum;
+                    }
+                }
+            }
+            temp = temp->next;
+        }
+        if(shortestJob > 0){
+            Node *transfer = remove(hold1, shortestJob);
+            addToEnd(ready, transfer);
+            availableMemory -= transfer->availableMemory;
+
+            updateSystem(syst, transfer, READY_Q);
+        }
+    }
+}
+
+void hold2QHandling(Node *syst, Node *hold2, Node *ready){
+    if(hold2->next != NULL){
+        Node *temp = hold2;
+
+        while(temp->next != NULL){
+            temp = temp->next;
+        }
+
+        if(temp->maxMemory <= availableMemory && temp->maxDevices <= availableDevices){
+            Node *transfer = remove(hold2, shortestJob);
+            addToEnd(ready, transfer);
+            availableMemory -= transfer->availableMemory;
+
+            updateSystem(syst, transfer, READY_Q);
+        }
+    }
+}
+
+void waitQHandling(Node *syst, Node *wait, Node *ready){
+    if(wait->next != NULL){
+        Node *temp = wait;
+        while(temp != NULL){
+            if(temp->head = false){
+                if(temp->maxDevices <= availableDevices){
+                    Node *transer = remove(wait, temp->jobNum);
+                    addToEnd(ready, transfer);
+
+                    updateSystem(syst, transfer, READY_Q);
+                }
+            }
+            temp = temp->next;
+        }
+    }
+}
+
 
 
 
