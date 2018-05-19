@@ -22,14 +22,14 @@ struct Node{
     int arriveTime;
     int completionTime;
     int turnAroundTime;
+    int weightedTurnAround;
     int priority;
     int jobNum;
     int runTime; //how long the job has to run for
     int timeLeft; //how long the job has left
     int maxDevices; //how many devices the job needs to complete
     int requestedDevices; //how many devices the job asks for to begin with
-    int maxMemory; //memory required to complete the job
-    int requestedMemory; //memory that the job requests to start with
+    int memoryNeeded; //memory required to complete the job
     bool devicesGranted; //true if devices are granted to the job
     bool memoryGranted; //true if memory is granted to the job
     
