@@ -4,16 +4,18 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
+#include <sys/types.h>
 #include <cstring>
 #include <cmath>
 #include "Queues.h"
+//#include "Queues.cpp"
 
 using namespace std;
 
 #define MAX_INPUTS 1000 //aribtrary large number for amount of inputs can go into the system
 #define END_TIME 9999 //will act as the longest time of the system/time that the system will be finished
-#define INPUT_FILE "~/OS/project/OS_Scheduler/input.txt" //input file will be a text file of inputs that will be interperated and executed by the system. have to still make that file, will do later
+#define INPUT_FILE "Users/Vineeth/Desktop/OS_project/OS_Scheduler/input.txt" //input file will be a text file of inputs that will be interperated and executed by the system. have to still make that file, will do later
 
 //list of all the statuses for the nodes. statuses will include which queue a job is sitting in, or whether it is completed or rejected
 #define SUBMIT_Q "Submit Queue"
@@ -412,7 +414,7 @@ void waitQHandling(Node *syst, Node *wait, Node *ready){
     if(wait->next != NULL){
         Node *temp = wait;
         while(temp != NULL){
-            if(temp->head = false){
+            if(temp->head == false){
                 if(temp->maxDevices <= availableDevices){
                     Node *waitToReady = remove(wait, temp->jobNum);
                     addToEnd(ready, waitToReady);
@@ -484,42 +486,42 @@ int main(){
         return 0;
     }
     //system queue. holds the job history
-    Node *syst = new Node;
+    struct Node *syst = new Node;
     syst->head = true;
     syst->next = NULL;
     
     //submit queue
-    Node *submit = new Node;
+    struct Node *submit = new Node;
     submit->head = true;
     submit->next = NULL;
     
     //hold queue 1
-    Node *hold1 = new Node;
+    struct Node *hold1 = new Node;
     hold1->head = true;
     hold1->next = NULL;
     
     //hold queue 2
-    Node *hold2 = new Node;
+    struct Node *hold2 = new Node;
     hold2->head = true;
     hold2->next = NULL;
     
     //ready queue
-    Node *ready = new Node;
+    struct Node *ready = new Node;
     ready->head = true;
     ready->next = NULL;
     
     //cpu queue
-    Node *cpu = new Node;
+    struct Node *cpu = new Node;
     cpu->head = true;
     cpu->next = NULL;
     
     //wait queue
-    Node *wait = new Node;
+    struct Node *wait = new Node;
     wait->head = true;
     wait->next = NULL;
     
     //complete queue
-    Node *complete = new Node;
+    struct Node *complete = new Node;
     complete->head = true;
     complete->next = NULL;
     
@@ -578,9 +580,9 @@ int main(){
             quantumSlice = 0;
             
             if (ready->next != NULL){
-                Node *cpuToReady = remove(cpu, cpu->next->jobNum);
+                struct Node *cpuToReady = remove(cpu, cpu->next->jobNum);
                 addToEnd(ready, cpuToReady);
-                Node *readyToCpu = remove(cpu, cpu->next->jobNum);
+                struct Node *readyToCpu = remove(cpu, cpu->next->jobNum);
                 addToEnd(cpu, readyToCpu);
                 updateStatus(syst, cpuToReady, READY_Q);
                 updateStatus(syst, readyToCpu, CPU);

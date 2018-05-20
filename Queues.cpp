@@ -2,7 +2,9 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "Queues.h"
+#include <Queues.h>
+#include <stdio.h>
+#include <string.h>
 
 using namespace std;
 
