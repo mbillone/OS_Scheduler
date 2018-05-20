@@ -7,7 +7,7 @@
 #include <string>
 #include <cstring>
 #include <cmath>
-#include "Node.h"
+#include "Queues.h"
 
 using namespace std;
 
@@ -83,7 +83,7 @@ void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node 
         releaseDevices(str, cpu, ready, wait, syst);
     }
     else if(input[0] == 'D'){
-        displayStatus(input, syst, submit, wait, hold1, hold2, ready, completed)
+        displayStatus(input, syst, submit, wait, hold1, hold2, ready, completed);
     }
     else{
         cout << "This is an unrecognized input" << endl;
@@ -91,14 +91,14 @@ void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node 
     
 }
 
-charToInt(char *str){ //method used to get the integer values out of the character array made from the input
+int charToInt(char *str){ //method used to get the integer values out of the character array made from the input
     int a = 0;
     int b = strlen(str) - 1;
     int c = 0;
     
     while (str[b] != '='){ //makes sure that the correct character in the input string is being converted. EX(M=43) -> 43 will be converted to an int
         
-        a += pow(10,c) * (str[i] - '0');
+        a += pow(10,c) * (str[b] - '0');
         c++;
         b--;
     }
@@ -137,7 +137,7 @@ void createJob(char *str, Node *syst, Node *submit){
     job->next = NULL;
     copy->next = NULL;
     
-    while str != NULL{ //going to do the same thing as configSystem with truncate and read beginning of char array
+    while (str != NULL){ //going to do the same thing as configSystem with truncate and read beginning of char array
         if (str[0] == 'J'){
             job->jobNum = charToInt(str);
             copy->jobNum = charToInt(str);
@@ -196,7 +196,7 @@ void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
         
     }
     
-    if (cpu->next->requestDevices > cpu->next->maxDevices){
+    if (cpu->next->requestedDevices > cpu->next->maxDevices){
         cout << "Job number" << job << "could not request" << devicesRequested << "devices because the requested devices is more than the maximum devices alotted for that job" << endl;
         
         return;
@@ -221,8 +221,8 @@ void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
         
         availableDevices = availableDevices - devicesRequested;//update available devices
         
-        Node *cpuToReady = remove(cpu, cpu->next->jobNum)//remove device from cpu after devices have been allocated
-        addToEnd(ready. cpuToReady);//put job into ready queue to be cycled
+        Node *cpuToReady = remove(cpu, cpu->next->jobNum);//remove device from cpu after devices have been allocated
+        addToEnd(ready, cpuToReady);//put job into ready queue to be cycled
         }
     
     else{
@@ -243,7 +243,7 @@ void releaseDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
             devicesReleased = charToInt(str);
         }
         
-        str = strok(NULL, " ");
+        str = strtok(NULL, " ");
     }
     
     if (job != cpu->next->jobNum){
@@ -274,9 +274,9 @@ void releaseDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
 void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
     if (submit->next != NULL){
         Node *temp = submit;
-        while (temp != null){
+        while (temp != NULL){
             if (temp->head == false){
-                if (temp->memoryNeeded > memory || temp->maxDevices > devices){//rejects the job if the system can not handle it (either not enough memory or devices to complete it)
+                if (temp->maxMemory > memory || temp->maxDevices > devices){//rejects the job if the system can not handle it (either not enough memory or devices to complete it)
                     remove(submit, temp->jobNum);
                     updateStatus(syst, temp, REJECTED);//change the job status to rejected
             }

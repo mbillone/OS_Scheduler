@@ -29,7 +29,7 @@ struct Node{
     int timeLeft; //how long the job has left
     int maxDevices; //how many devices the job needs to complete
     int requestedDevices; //how many devices the job asks for to begin with
-    int memoryNeeded; //memory required to complete the job
+    int maxMemory; //memory required to complete the job
     bool devicesGranted; //true if devices are granted to the job
     bool memoryGranted; //true if memory is granted to the job
     
