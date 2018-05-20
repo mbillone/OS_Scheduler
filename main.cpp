@@ -51,7 +51,7 @@ int quantumSlice = 0;
 //method instantiation, syst is a linked list that tracks all the inputs that go into the system in the order that they went into the system
 
 int getInputTime(string input); //gets the current input's time that it should start at
-void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed);
+void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed);
 void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst);
 void configSystem(char *str); //called when the system configuration input command is read
 void createJob(char *str, Node *syst, Node *submit);
@@ -114,7 +114,7 @@ void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node 
         releaseDevices(str, cpu, ready, wait, syst);
     }
     else if(input[0] == 'D'){
-        displayStatus(input, syst, submit, wait, hold1, hold2, ready, completed);
+        displayStatus(input, syst, submit, wait, hold1, hold2, ready, cpu, completed);
     }
     else{
         cout << "This is an unrecognized input" << endl;
