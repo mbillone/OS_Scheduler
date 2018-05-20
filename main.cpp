@@ -62,6 +62,7 @@ void hold1QHanlding(Node *syst, Node *hold1, Node *ready);//handles moving jobs 
 void hold2QHandling(Node *syst, Node *hold2, Node *ready);//handles moving jobs from holding queue 2 to the ready queue
 void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs from the wait queue to the ready queue
 void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
+void traverseAndPrint (Node *jobs);//prints the queue
 void cpuHandling(Node *syst, Node *cpu, Node *ready, Node *hold1, Node *hold2, Node *wait, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
 void updateStatus(Node *syst, Node *update, string status);//updates the job's status when a job moves from one state to another
 int charToInt(char *str);
@@ -286,6 +287,26 @@ void readyQHandling(Node *syst, Node *ready, Node *cpu){
             cout << "CPU is occupied" << endl;
         }
     }
+}
+
+
+void traverseAndPrint (Node *jobs)
+{
+  Node *temp = jobs;
+  if (temp->next == NULL);{
+      cout << "Current Queue is Empty" << endl;
+  }
+  else{
+      int i = 0;
+      while(temp->next != NULL){
+        if (temp->head == false){
+            cout << "Job number: " << temp->jobNum << " Position in Current Queue: " << i <<endl;
+            i++;
+        }
+        temp = temp->next;
+      }
+  }
+
 }
 
 void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
