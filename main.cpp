@@ -48,7 +48,7 @@ int quantumSlice = 0;
 //method instantiation, syst is a linked list that tracks all the inputs that go into the system in the order that they went into the system
 
 int getInputTime(string input); //gets the current input's time that it should start at
-void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed, Node *syst);
+void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst);
 void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed);
 void configSystem(char *str); //called when the system configuration input command is read
 void createJob(char *str, Node *syst, Node *submit);
@@ -64,7 +64,7 @@ void updateStatus(Node *syst, Node *update, string status);//updates the job's s
 int charToInt(char *str);
 
 
-void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed, Node *syst){
+void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst){
     char in[input.length()];//creates character array
     strcpy(in, input.c_str());//converts the string into an array of characters
     char *str;
@@ -531,7 +531,7 @@ int main(){
         }
         
         if (!allInputsCompleted && currentTime >= inputTime && !multipleInputs){//checks if multiple inputs are getting put in
-            readInputCommand(currentLine, submit, wait, hold1, hold2, ready, complete, syst);
+            readInputCommand(currentLine, submit, wait, hold1, hold2, ready, cpu, complete, syst);
             inputNum++;
             
             if (!allInputsCompleted){//only happens if multiple inputs get put in
@@ -542,7 +542,7 @@ int main(){
             }
         }
         if (multipleInputs == true){//handles multiple inputs
-            readInputCommand(inputQ[inputNum], submit, wait, hold1, hold2, ready, complete, syst);
+            readInputCommand(inputQ[inputNum], submit, wait, hold1, hold2, ready, cpu, complete, syst);
             inputNum++;
             
             if(inputNum >= numOfInputs - 1){
