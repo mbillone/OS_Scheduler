@@ -457,6 +457,32 @@ void updateStatus(Node *syst, Node *update, string status){//needed to update th
     }
 }
 
+void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed){
+    if (input == "D 9999 " || input == "D 9999") {//makes sure it gets detected if it is in the middle of the input file and not at the end
+		allInputRead = true;
+		return;
+	}
+	cout << "System at " << currentTime << ": " << endl;
+	printSystem(sys);
+	cout <<  "Submit Queue contains: " << endl;
+	traverseAndPrint(submit);
+	cout <<  "Hold Queue 1 contains: " << endl;
+	traverseAndPrint(hold1);
+	cout <<  "Hold Queue 2 contains: " << endl;
+	traverseAndPrint(hold2);
+	cout <<  "Ready Queue contains: " << endl;
+	traverseAndPrint(ready);
+	cout <<  "Using the CPU: " << endl;
+	if (cpu->next != NULL) {
+		cout << "Job Number: " << cpu->next->jobNumber << endl;
+	} else {
+		cout << "No job on CPU" << endl;
+	}
+	cout << "Wait Queue contains: " << endl;
+	traverseAndPrint(wait);
+	cout << "Completed Jobs: " << endl;
+	traverseAndPrint(complete);
+}
 
 
 int main(){
