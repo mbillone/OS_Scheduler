@@ -13,7 +13,7 @@ using namespace std;
 
 #define MAX_INPUTS 1000 //aribtrary large number for amount of inputs can go into the system
 #define END_TIME 9999 //will act as the longest time of the system/time that the system will be finished
-#define INPUT_FILE "" //input file will be a text file of inputs that will be interperated and executed by the system. have to still make that file, will do later
+#define INPUT_FILE "~/OS/project/OS_Scheduler/input.txt" //input file will be a text file of inputs that will be interperated and executed by the system. have to still make that file, will do later
 
 //list of all the statuses for the nodes. statuses will include which queue a job is sitting in, or whether it is completed or rejected
 #define SUBMIT_Q "Submit Queue"
@@ -32,7 +32,7 @@ int currentTime = 0; //current time of the system
 int inputTime = 0; //time the input is put in
 int inputNum = 0; //number of the input/job that the system is on/has been put into the system
 bool allInputsEntered = false; //will turn true as soon as all the inputs have been entered into the system
-bool inputsCompleted = false; //will turn true as soon as all inputs have completed
+bool allInputsCompleted = false; //will turn true as soon as all inputs have completed
 bool multipleInputs = false; //will turn true if multiple inputs enter the system at the same time. used as a failsafe
 int numOfInputs = 0; //total amount of inputs that are presented to the system and are in the Submit Queue
 
@@ -59,7 +59,7 @@ void hold1QHanlding(Node *syst, Node *hold1, Node *ready);//handles moving jobs 
 void hold2QHandling(Node *syst, Node *hold2, Node *ready);//handles moving jobs from holding queue 2 to the ready queue
 void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs from the wait queue to the ready queue
 void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
-void cpuHandling(Node *syst, Node *cpu, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
+void cpuHandling(Node *syst, Node *cpu, Node *ready, Node *hold1, Node *hold2, Node *wait, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
 void updateStatus(Node *syst, Node *update, string status);//updates the job's status when a job moves from one state to another
 int charToInt(char *str);
 
@@ -313,7 +313,7 @@ void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
     }
 }
 
-void cpuHandling(Node *syst, Node *cpu, Node *completed){
+void cpuHandling(Node *syst, Node *cpu, Node *ready, Node *hold1, Node *hold2, Node *wait, Node *completed){
     if (cpu->next != NULL){
         
         cpu->next->timeLeft--;
@@ -333,9 +333,9 @@ void cpuHandling(Node *syst, Node *cpu, Node *completed){
             cpu->next->turnAroundTime = currentTime - cpu->next->arriveTime;
             cpu->next->weightedTurnAround = cpu->next->turnAroundTime / cpu->next->runTime;
         
-            availableMemory = availableMemory + cpu->next->memoryNeeded;
+            availableMemory = availableMemory + cpu->next->maxMemory;
         
-            if (run->next->devicesGranted){
+            if (cpu->next->devicesGranted){
                 availableDevices = availableDevices + cpu->next->requestedDevices;
             }
         
@@ -348,8 +348,8 @@ void cpuHandling(Node *syst, Node *cpu, Node *completed){
             temp->turnAroundTime = cpu->next->turnAroundTime;
             temp->weightedTurnAround = cpu->next->weightedTurnAround;
             Node *cpuToComplete = remove(cpu, cpu->next->jobNum);
-            addToEnd(complete, cpuToComplete);
-            updateStatus(syst, cpuToComplete, COMPLETE);
+            addToEnd(completed, cpuToComplete);
+            updateStatus(syst, cpuToComplete, COMPLETED);
             waitQHandling(syst, wait, ready);
             hold1QHanlding(syst, hold1, ready);
             hold2QHandling(syst, hold2, ready);
@@ -382,9 +382,9 @@ void hold1QHanlding(Node *syst, Node *hold1, Node *ready){
         if(shortestJob > 0){
             Node *transfer = remove(hold1, shortestJob);
             addToEnd(ready, transfer);
-            availableMemory -= transfer->availableMemory;
+            availableMemory -= transfer->maxMemory;
 
-            updateSystem(syst, transfer, READY_Q);
+            updateStatus(syst, transfer, READY_Q);
         }
     }
 }
@@ -398,11 +398,11 @@ void hold2QHandling(Node *syst, Node *hold2, Node *ready){
         }
 
         if(temp->maxMemory <= availableMemory && temp->maxDevices <= availableDevices){
-            Node *transfer = remove(hold2, shortestJob);
+            Node *transfer = remove(hold2, temp->jobNum);
             addToEnd(ready, transfer);
-            availableMemory -= transfer->availableMemory;
+            availableMemory -= transfer->maxMemory;
 
-            updateSystem(syst, transfer, READY_Q);
+            updateStatus(syst, transfer, READY_Q);
         }
     }
 }
@@ -414,10 +414,10 @@ void waitQHandling(Node *syst, Node *wait, Node *ready){
         while(temp != NULL){
             if(temp->head = false){
                 if(temp->maxDevices <= availableDevices){
-                    Node *transer = remove(wait, temp->jobNum);
-                    addToEnd(ready, transfer);
+                    Node *waitToReady = remove(wait, temp->jobNum);
+                    addToEnd(ready, waitToReady);
 
-                    updateSystem(syst, transfer, READY_Q);
+                    updateStatus(syst, waitToReady, READY_Q);
                 }
             }
             temp = temp->next;
@@ -470,7 +470,7 @@ int main(){
                 line--;
             }
             else{
-                inputQ[i] = input;
+                inputQ[line] = input;
             }
             line++;
         }
@@ -528,7 +528,7 @@ int main(){
         string currentLine = inputQ[inputNum];
         
         if (!allInputsCompleted){
-            inputTime = getCurrentInputTime(currentLine);
+            inputTime = getInputTime(currentLine);
         }
         
         if (!allInputsCompleted && currentTime >= inputTime && !multipleInputs){//checks if multiple inputs are getting put in
@@ -536,7 +536,7 @@ int main(){
             inputNum++;
             
             if (!allInputsCompleted){//only happens if multiple inputs get put in
-                int nextInputTime = getCurrentInputTime(inputQ[inputNum]);
+                int nextInputTime = getInputTime(inputQ[inputNum]);
                 if(inputTime == nextInputTime){
                     multipleInputs = true;
                 }
@@ -571,7 +571,7 @@ int main(){
         readyQHandling(syst, ready, cpu);
         
         if (!multipleInputs){
-            cpuHandling(syst, cpu, complete);
+            cpuHandling(syst, cpu, ready, hold1, hold2, wait, complete);
         }
         
         if (quantumSlice == quantum){//for time slice switching
@@ -597,7 +597,7 @@ int main(){
     }
     
     cout << "Final System Status: " << endl;
-    printSystem(syst);
+    printStatus(syst);
     cout << "Submit Queue contains: " << endl;
     traverseAndPrint(submit);
     cout << "Hold Queue 1 contains: " << endl;
@@ -637,9 +637,9 @@ int main(){
     k = k / j;
     
     cout << "Average turn around time for the system: " << endl;
-    printf("%.2f", i);
+    printf("%.2d", i);
     cout << "Average weigheted turn around for the system: " << endl;
-    printf("%.2f", k);
+    printf("%.2d", k);
     
     return 1;
     
