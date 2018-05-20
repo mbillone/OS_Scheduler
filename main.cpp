@@ -293,7 +293,7 @@ void readyQHandling(Node *syst, Node *ready, Node *cpu){
 void traverseAndPrint (Node *jobs)
 {
   Node *temp = jobs;
-  if (temp->next == NULL);{
+  if (temp->next == NULL){
       cout << "Current Queue is Empty" << endl;
   }
   else{
@@ -480,11 +480,11 @@ void updateStatus(Node *syst, Node *update, string status){//needed to update th
 
 void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed){
     if (input == "D 9999 " || input == "D 9999") {//makes sure it gets detected if it is in the middle of the input file and not at the end
-		allInputRead = true;
+		allInputsCompleted = true;
 		return;
 	}
 	cout << "System at " << currentTime << ": " << endl;
-	printSystem(sys);
+	printStatus(syst);
 	cout <<  "Submit Queue contains: " << endl;
 	traverseAndPrint(submit);
 	cout <<  "Hold Queue 1 contains: " << endl;
@@ -495,14 +495,14 @@ void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hol
 	traverseAndPrint(ready);
 	cout <<  "Using the CPU: " << endl;
 	if (cpu->next != NULL) {
-		cout << "Job Number: " << cpu->next->jobNumber << endl;
+		cout << "Job Number: " << cpu->next->jobNum << endl;
 	} else {
 		cout << "No job on CPU" << endl;
 	}
 	cout << "Wait Queue contains: " << endl;
 	traverseAndPrint(wait);
 	cout << "Completed Jobs: " << endl;
-	traverseAndPrint(complete);
+	traverseAndPrint(completed);
 }
 
 
