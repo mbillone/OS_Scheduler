@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <Queues.h>
+#include "Queues.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -45,7 +45,7 @@ void printStatus (Node * jobs)
 void printQ (Node *jobs)
 {
   Node *temp = jobs;
-  if (temp->next == NULL);{
+  if (temp->next == NULL){
       cout << "Current Queue is Empty" << endl;
   }
   else{
@@ -64,7 +64,7 @@ void printQ (Node *jobs)
 
 //adds a node/job to the front of the queue
 void addToFront (Node *head , Node *added){
-    Node temp = new Node;
+    Node *temp = new Node;
     temp->next = head;
     head->next = added;
     added->next = temp->next;
@@ -87,7 +87,7 @@ void addToEnd (Node *head , Node *added){
 }
 
 //remove job/node from the queue, return it to be used
-void *remove(Node *head, int toRemove){
+Node *remove(Node *head, int toRemove){
     Node *temp = head;
     Node *tempPrev; //previous node
     
