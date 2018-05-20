@@ -51,8 +51,8 @@ int quantumSlice = 0;
 //method instantiation, syst is a linked list that tracks all the inputs that go into the system in the order that they went into the system
 
 int getInputTime(string input); //gets the current input's time that it should start at
-void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst);
 void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *completed);
+void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst);
 void configSystem(char *str); //called when the system configuration input command is read
 void createJob(char *str, Node *syst, Node *submit);
 void requestDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst);//called when the job wants to request devices while on the cpu
@@ -66,6 +66,33 @@ void traverseAndPrint (Node *jobs);//prints the queue
 void cpuHandling(Node *syst, Node *cpu, Node *ready, Node *hold1, Node *hold2, Node *wait, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
 void updateStatus(Node *syst, Node *update, string status);//updates the job's status when a job moves from one state to another
 int charToInt(char *str);
+
+void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed){
+    if (input == "D 9999 " || input == "D 9999") {//makes sure it gets detected if it is in the middle of the input file and not at the end
+		allInputsCompleted = true;
+		return;
+	}
+	cout << "System at " << currentTime << ": " << endl;
+	printStatus(syst);
+	cout <<  "Submit Queue contains: " << endl;
+	traverseAndPrint(submit);
+	cout <<  "Hold Queue 1 contains: " << endl;
+	traverseAndPrint(hold1);
+	cout <<  "Hold Queue 2 contains: " << endl;
+	traverseAndPrint(hold2);
+	cout <<  "Ready Queue contains: " << endl;
+	traverseAndPrint(ready);
+	cout <<  "Using the CPU: " << endl;
+	if (cpu->next != NULL) {
+		cout << "Job Number: " << cpu->next->jobNum << endl;
+	} else {
+		cout << "No job on CPU" << endl;
+	}
+	cout << "Wait Queue contains: " << endl;
+	traverseAndPrint(wait);
+	cout << "Completed Jobs: " << endl;
+	traverseAndPrint(completed);
+}
 
 
 void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst){
@@ -478,32 +505,6 @@ void updateStatus(Node *syst, Node *update, string status){//needed to update th
     }
 }
 
-void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed){
-    if (input == "D 9999 " || input == "D 9999") {//makes sure it gets detected if it is in the middle of the input file and not at the end
-		allInputsCompleted = true;
-		return;
-	}
-	cout << "System at " << currentTime << ": " << endl;
-	printStatus(syst);
-	cout <<  "Submit Queue contains: " << endl;
-	traverseAndPrint(submit);
-	cout <<  "Hold Queue 1 contains: " << endl;
-	traverseAndPrint(hold1);
-	cout <<  "Hold Queue 2 contains: " << endl;
-	traverseAndPrint(hold2);
-	cout <<  "Ready Queue contains: " << endl;
-	traverseAndPrint(ready);
-	cout <<  "Using the CPU: " << endl;
-	if (cpu->next != NULL) {
-		cout << "Job Number: " << cpu->next->jobNum << endl;
-	} else {
-		cout << "No job on CPU" << endl;
-	}
-	cout << "Wait Queue contains: " << endl;
-	traverseAndPrint(wait);
-	cout << "Completed Jobs: " << endl;
-	traverseAndPrint(completed);
-}
 
 
 int main(){
