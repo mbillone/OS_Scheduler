@@ -293,6 +293,7 @@ void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
                 if (temp->maxMemory > memory || temp->maxDevices > devices){//rejects the job if the system can not handle it (either not enough memory or devices to complete it)
                     remove(submit, temp->jobNum);
                     updateStatus(syst, temp, REJECTED);//change the job status to rejected
+                }    
             }
             
             Node *submitTohandling = remove(submit, temp->jobNum);
