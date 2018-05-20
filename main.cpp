@@ -271,6 +271,20 @@ void releaseDevices(char *str, Node *cpu, Node *ready, Node *wait, Node *syst){
     }
 }
 
+void readyQHandling(Node *syst, Node *ready, Node *cpu){
+    if (ready->next != NULL){
+        if(cpu->next == NULL){//put job onto cpu if the cpu is free
+            Node *readyToCpu = remove(ready, ready->next->jobNum);
+            addToFront(cpu, readyToCpu);
+            quantumSlice = 0;
+            updateStatus(syst, readyToCpu, CPU);
+        }
+        else{
+            cout << "CPU is occupied" << endl;
+        }
+    }
+}
+
 void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
     if (submit->next != NULL){
         Node *temp = submit;
@@ -294,20 +308,6 @@ void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
                 }
             }
             temp = temp->next;
-        }
-    }
-}
-
-void readyQHandling(Node *syst, Node *ready, Node *cpu){
-    if (ready->next != NULL){
-        if(cpu->next == NULL){//put job onto cpu if the cpu is free
-            Node *readyToCpu = remove(ready, ready->next->jobNum);
-            addToFront(cpu, readyToCpu);
-            quantumSlice = 0;
-            updateStatus(syst, readyToCpu, CPU);
-        }
-        else{
-            cout << "CPU is occupied" << endl;
         }
     }
 }
