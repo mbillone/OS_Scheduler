@@ -42,7 +42,7 @@ void printStatus (Node * jobs)
 }
 
 
-void printQ (Node *jobs)
+void traverseAndPrint (Node *jobs)
 {
   Node *temp = jobs;
   if (temp->next == NULL){
