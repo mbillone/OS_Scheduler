@@ -62,7 +62,7 @@ void hold1QHanlding(Node *syst, Node *hold1, Node *ready);//handles moving jobs 
 void hold2QHandling(Node *syst, Node *hold2, Node *ready);//handles moving jobs from holding queue 2 to the ready queue
 void waitQHandling(Node *syst, Node *wait, Node *ready);//handles moving jobs from the wait queue to the ready queue
 void readyQHandling(Node *syst, Node *ready, Node *cpu);//handles moving jobs from the ready queue to the CPU
-void traverseAndPrint (Node *jobs);//prints the queue
+//void traverseAndPrint (Node *jobs);//prints the queue
 void cpuHandling(Node *syst, Node *cpu, Node *ready, Node *hold1, Node *hold2, Node *wait, Node *completed);//handles moving jobs from cpu to completed queue if completed, or waiting queue if there are not enough devices
 void updateStatus(Node *syst, Node *update, string status);//updates the job's status when a job moves from one state to another
 int charToInt(char *str);
@@ -96,12 +96,13 @@ void displayStatus(string input, Node *syst, Node *submit, Node *wait, Node *hol
 
 
 void readInputCommand(string input, Node *submit, Node *wait, Node *hold1, Node *hold2, Node *ready, Node *cpu, Node *completed, Node *syst){
-    char in[input.length()];//creates character array
-    strcpy(in, input.c_str());//converts the string into an array of characters
+    char line[input.length()];//creates character array
+    strcpy(line, input.c_str());//converts the string into an array of characters
     char *str;
-    str = strtok(in, " ");//spaces to seperate each part of the input
+    str = strtok(line, " ");//spaces to seperate each part of the input
+    printf("%s\n", str);
     
-    if (input[0] == 'C'){
+    if (str[0] == 'C'){
         configSystem(str);
     }
     else if(input[0] == 'A'){
@@ -316,7 +317,7 @@ void readyQHandling(Node *syst, Node *ready, Node *cpu){
     }
 }
 
-
+/*
 void traverseAndPrint (Node *jobs)
 {
   Node *temp = jobs;
@@ -335,7 +336,7 @@ void traverseAndPrint (Node *jobs)
   }
 
 }
-
+*/
 void submitQHandling(Node *syst, Node *hold1, Node *hold2, Node *submit){
     if (submit->next != NULL){
         Node *temp = submit;
@@ -510,14 +511,14 @@ void updateStatus(Node *syst, Node *update, string status){//needed to update th
 int main(){
     string input;
     string inputQ[MAX_INPUTS];
-    ifstream inputFile (INPUT_FILE);
+    ifstream inputFile ("input.txt");
     
     //to open input text file
-    if (inputFile.is_open()){
+    //if (inputFile.is_open()){
         int line = 0;
         while (getline(inputFile, input)){
             if (input[input.length() - 1] != ' '){
-                cout << "Line" << line + 1 << "does not end with a space, so the input can not be accepted" << endl;
+                cout << "Line " << line + 1 << " does not end with a space, so the input can not be accepted" << endl;
                 line--;
             }
             else{
@@ -528,12 +529,12 @@ int main(){
         
         numOfInputs = line;
         inputFile.close();
-    }
+    //}
     
-    else{
+    /*else{
         cout << "Cannot open file" << endl;
         return 0;
-    }
+    }*/
     //system queue. holds the job history
     struct Node *syst = new Node;
     syst->head = true;
@@ -583,6 +584,7 @@ int main(){
         }
         
         if (!allInputsCompleted && currentTime >= inputTime && !multipleInputs){//checks if multiple inputs are getting put in
+            snprintf(*currentLine, currentLine.length());
             readInputCommand(currentLine, submit, wait, hold1, hold2, ready, cpu, complete, syst);
             inputNum++;
             
